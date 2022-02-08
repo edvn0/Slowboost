@@ -1,0 +1,6 @@
+[submodule "tests/googletest"]
+	path = tests/googletest
+	url = https://github.com/google/googletest.git
+[submodule "lib/EigenRand"]
+	path = lib/EigenRand
+	url = https://github.com/bab2min/EigenRand.git
