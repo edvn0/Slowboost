@@ -34,8 +34,7 @@ Matrix Session::run()
 {
 	for (Node* node : order) {
 		auto type = node->get_type();
-		auto name = node->get_identifier();
-		
+
 		switch (type) {
 		case NodeType::NONE: {
 			throw std::runtime_error("Not here.");

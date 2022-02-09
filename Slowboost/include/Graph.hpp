@@ -9,6 +9,7 @@
 #include "Placeholder.hpp"
 #include "Session.hpp"
 #include <set>
+#include <sstream>
 
 class Graph {
 private:
@@ -20,6 +21,9 @@ public:
 	explicit Graph(SharedNodePtr computation_graph);
 
 	Matrix evaluate(const PlaceholderMap& mapping);
+
+public:
+	static Matrix evaluate(SharedNodePtr cg, const PlaceholderMap& map = {});
 
 private:
 	void check_placeholder_correctness(const PlaceholderMap& map);

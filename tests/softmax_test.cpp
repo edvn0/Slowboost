@@ -36,10 +36,9 @@ TEST(SpecificationCorrectness, Softmax)
 	auto basis = var(b);
 	auto p = op<Softmax>(op<Add>(op<MatrixMultiply>(ph("x"), W), basis));
 
-	auto J = op<Negative>(op<ReduceSum>(op<ReduceSum>(op<Hadamard>(ph("c"), op<Log>(p)), 1)));
+	auto J = op<Negative>(op<ReduceSum>(op<ReduceSum>(op<Hadamard>(ph("c"), op<Log>(p)), Axis::One)));
 	auto loss_graph = Graph(J);
-	double correct = 0.858891336327;
+	double correct = 0.104612;
 	auto loss = loss_graph.evaluate({ { "x", all_points }, { "c", correct_identifier } });
-	DEBUG(loss);
-	// ASSERT_NEAR(los, correct, 1e-5);
+	ASSERT_NEAR(loss.coeff(0), correct, 1e-5);
 }

@@ -29,6 +29,8 @@ public:
 
 	Matrix run();
 
+	static Matrix evaluate(SharedNodePtr graph, PlaceholderMap map = {});
+
 public:
 	static void recurse_po(Node* op, EvaluationOrder& out);
 	static EvaluationOrder po_traverse(Node* op);

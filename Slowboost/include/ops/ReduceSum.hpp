@@ -7,15 +7,17 @@
 
 #include "Operation.hpp"
 
+enum class Axis { Zero = 0, One = 1, None = 2 };
+
 class ReduceSum : public Operation {
 public:
 	~ReduceSum() override = default;
-	explicit ReduceSum(SharedNodePtr left, int axis = 0);
+	explicit ReduceSum(SharedNodePtr left, Axis axis = Axis::None);
 	SharedNodePtr execute() override;
 	Matrix differentiate() override;
 
 private:
-	int axis;
+	Axis axis;
 };
 
 #endif // COMP_GRAPH_REDUCESUM_HPP

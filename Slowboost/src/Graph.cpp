@@ -5,6 +5,7 @@
 #include "Graph.hpp"
 #include "util/Stopwatch.hpp"
 #include <iostream>
+#include <utility>
 
 Graph::Graph(SharedNodePtr computation_graph)
 	: graph(std::move(computation_graph))
@@ -46,4 +47,10 @@ void Graph::check_placeholder_correctness(const PlaceholderMap& map)
 			throw std::runtime_error("Placeholder ID does not exist in this graph.");
 		}
 	}
+}
+
+Matrix Graph::evaluate(SharedNodePtr cg, const PlaceholderMap& map)
+{
+	Graph g(std::move(cg));
+	return g.evaluate(map);
 }

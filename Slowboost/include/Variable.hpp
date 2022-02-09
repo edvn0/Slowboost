@@ -19,8 +19,14 @@ public:
 
 	SharedNodePtr execute() override { return std::make_shared<Variable>(data); }
 
+	std::string display_node() override;
+
 	Matrix get_data() { return data; }
 	[[nodiscard]] Matrix get_data() const { return data; }
+
+public:
+	static SharedNodePtr glorot_uniform(size_t input_units, size_t output_units);
+	static SharedNodePtr glorot_normal(size_t input_units, size_t output_units);
 };
 
 #endif // COMP_GRAPH_VARIABLE_HPP

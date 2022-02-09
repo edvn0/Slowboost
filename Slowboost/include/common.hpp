@@ -10,24 +10,27 @@
 #include "Variable.hpp"
 #include "types.hpp"
 
-#include <iostream>
+#include <array>
+#include <fstream>
 #include <utility>
-
-auto var(Eigen::MatrixXd&& val) -> SharedNodePtr { return std::make_shared<Variable>(val); }
-
-auto var(const Eigen::MatrixXd& val) -> SharedNodePtr { return std::make_shared<Variable>(val); }
-
-auto ph(const std::string& name) -> SharedNodePtr { return std::make_shared<Placeholder>(name); };
-
-template <typename T = Operation, typename... Args> auto op(Args&&... args)
-{
-	return std::make_shared<T>(std::forward<Args>(args)...);
-}
+#include <vector>
 
 #ifdef CG_DEBUG
+#include <iostream>
 #define DEBUG(x) std::cout << "\n" << (x) << "\n"
 #else
 #define DEBUG
 #endif
+
+SharedNodePtr var(Matrix&& val);
+
+SharedNodePtr var(const Matrix& val);
+
+SharedNodePtr ph(const std::string& name);
+
+template <typename T, typename... Args> SharedNodePtr op(Args&&... args)
+{
+	return std::make_shared<T>(std::forward<Args>(args)...);
+}
 
 #endif // COMP_GRAPH_COMMON_HPP

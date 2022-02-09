@@ -2,6 +2,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,clion+all,c++,cmake
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,clion+all,c++,cmake
 
+
+
 ### C++ ###
 # Prerequisites
 *.d
@@ -176,5 +178,7 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+build
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,clion+all,c++,cmake

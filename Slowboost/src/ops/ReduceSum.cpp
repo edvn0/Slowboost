@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-ReduceSum::ReduceSum(SharedNodePtr value, int axis)
+ReduceSum::ReduceSum(SharedNodePtr value, Axis axis)
 	: Operation(std::move(value), {}, "ReduceSum")
 	, axis(axis)
 {
@@ -16,10 +16,13 @@ SharedNodePtr ReduceSum::execute()
 {
 	auto matrix = left->get_output();
 	Matrix out;
-	if (axis == 0) {
+	if (axis == Axis::Zero) {
 		out = matrix.colwise().sum();
-	} else if (axis == 1) {
+	} else if (axis == Axis::One) {
 		out = matrix.rowwise().sum();
+	} else if (axis == Axis::None) {
+		auto col = matrix.colwise().sum();
+		out = col.rowwise().sum();
 	} else {
 		throw std::runtime_error("Only rows and columns accepted.");
 	}
