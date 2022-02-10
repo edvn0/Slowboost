@@ -8,6 +8,7 @@
 #include <ostream>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "types.hpp"
 
@@ -24,11 +25,11 @@ protected:
 	SharedNodePtr right;
 
 	Matrix output;
-	SharedNodePtr consumer;
 
 	NodeType type;
 
-	[[maybe_unused]] std::string debug_name;
+	std::string debug_name;
+	Node* consumer = nullptr;
 
 public:
 	virtual ~Node() = default;
@@ -38,21 +39,34 @@ public:
 
 	virtual SharedNodePtr execute() = 0;
 
+	void add_consumers()
+	{
+		if (left)
+			left->set_consumer(this);
+		if (right)
+			right->set_consumer(this);
+	};
+
+	virtual std::string display_node() { return {}; };
+
+	virtual std::array<Matrix, 2> backprop(const Matrix& wrt) = 0;
+	virtual std::array<Matrix, 2> backprop(double wrt) { return backprop(Matrix::Constant(1, 1, wrt)); };
+
 public:
 	SharedNodePtr& get_left() { return left; }
 	SharedNodePtr& get_right() { return right; }
+
 	Matrix get_output() { return output; };
-	SharedNodePtr get_consumer() { return consumer; }
-
+	Matrix get_output() const { return output; }
 	void set_output(Matrix matrix) { output = std::move(matrix); };
-	void set_consumer(SharedNodePtr node) { consumer = std::move(node); };
 
-	[[nodiscard]] NodeType get_type() const { return type; };
-	[[nodiscard]] Matrix get_output() const { return output; }
+	int inputs() { return bool(left) + bool(right); }
 
+	void set_consumer(Node* node) { consumer = node; };
+	Node* get_consumer() { return consumer; }
+
+	NodeType get_type() const { return type; };
 	std::string_view get_identifier() { return debug_name; }
-
-	virtual std::string display_node() { return {}; };
 };
 
 #endif // COMP_GRAPH_NODE_HPP

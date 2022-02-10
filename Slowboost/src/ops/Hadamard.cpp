@@ -12,4 +12,10 @@ SharedNodePtr Hadamard::execute()
 	return std::make_unique<Variable>(left->get_output().array() * right->get_output().array());
 }
 
-Matrix Hadamard::differentiate() { return left->get_output(); }
+std::array<Matrix, 2> Hadamard::backprop(const Matrix& wrt)
+{
+	auto A = left->get_output();
+	auto B = right->get_output();
+	Array had = wrt.array();
+	return { B.array() * had, A.array() * had };
+}

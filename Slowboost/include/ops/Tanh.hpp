@@ -12,7 +12,7 @@ public:
 	~Tanh() override = default;
 	explicit Tanh(SharedNodePtr left);
 	SharedNodePtr execute() override;
-	Matrix differentiate() override;
+	std::array<Matrix, 2> backprop(double wrt) override;
 
 private:
 	MathFunction _tanh = [](double d) { return tanh(d); };

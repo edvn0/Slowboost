@@ -14,4 +14,4 @@ SharedNodePtr Negative::execute()
 	return std::make_unique<Variable>(-matrix);
 }
 
-Matrix Negative::differentiate() { return left->get_output(); }
+std::array<Matrix, 2> Negative::backprop(const Matrix& wrt) { return { -wrt, {} }; }

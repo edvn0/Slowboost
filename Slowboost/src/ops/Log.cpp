@@ -17,4 +17,8 @@ SharedNodePtr Log::execute()
 	return std::make_unique<Variable>(log);
 }
 
-Matrix Log::differentiate() { return left->get_output(); }
+std::array<Matrix, 2> Log::backprop(const Matrix& wrt)
+{
+	auto A = dynamic_cast<Variable*>(left.get())->get_data();
+	return { wrt.array() / (A(0, 0) + 1e-9), {} };
+}

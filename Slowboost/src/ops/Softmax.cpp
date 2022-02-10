@@ -23,4 +23,4 @@ SharedNodePtr Softmax::execute()
 	return std::make_unique<Variable>(std::move(sm));
 }
 
-Matrix Softmax::differentiate() { return {}; }
+std::array<Matrix, 2> Softmax::backprop(const Matrix& wrt) { return {}; }

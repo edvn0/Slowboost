@@ -12,7 +12,7 @@ public:
 	~Add() override = default;
 	Add(SharedNodePtr left, SharedNodePtr right);
 	SharedNodePtr execute() override;
-	Matrix differentiate() override;
+	std::array<Matrix, 2> backprop(const Matrix& wrt) override;
 };
 
 #endif // COMP_GRAPH_ADD_HPP

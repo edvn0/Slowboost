@@ -13,4 +13,4 @@ SharedNodePtr Sigmoid::execute()
 	return std::make_unique<Variable>(l.unaryExpr(sigmoid));
 }
 
-Matrix Sigmoid::differentiate() { return left->get_output().unaryExpr(sigmoid_diff); }
+std::array<Matrix, 2> Sigmoid::backprop(double wrt) { return {}; }

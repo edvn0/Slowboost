@@ -8,4 +8,7 @@ Node::Node(std::string debug_name, NodeType type, SharedNodePtr left, SharedNode
 	: debug_name(std::move(debug_name))
 	, type(type)
 	, left(std::move(left))
-	, right(std::move(right)){};
+	, right(std::move(right))
+{
+	add_consumers();
+};

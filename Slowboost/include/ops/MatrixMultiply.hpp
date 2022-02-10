@@ -12,7 +12,7 @@ public:
 	~MatrixMultiply() override = default;
 	MatrixMultiply(SharedNodePtr left, SharedNodePtr right);
 	SharedNodePtr execute() override;
-	Matrix differentiate() override;
+	std::array<Matrix, 2> backprop(const Matrix& wrt) override;
 };
 
 #endif // COMP_GRAPH_MATRIXMULTIPLY_HPP

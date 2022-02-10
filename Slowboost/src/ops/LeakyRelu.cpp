@@ -14,4 +14,4 @@ LeakyRelu::LeakyRelu(SharedNodePtr value, double leak)
 
 SharedNodePtr LeakyRelu::execute() { return std::make_unique<Variable>(left->get_output().unaryExpr(leaky_relu)); }
 
-Matrix LeakyRelu::differentiate() { return Matrix(); }
+std::array<Matrix, 2> LeakyRelu::backprop(const Matrix& wrt) { return {}; }

@@ -6,4 +6,8 @@
 
 Placeholder::Placeholder(const std::string& name)
 	: Node("Placeholder " + name, NodeType::PH)
-	, identifier(name){};
+	, identifier(name)
+{
+}
+
+std::array<Matrix, 2> Placeholder::backprop(const Matrix& wrt) { return {}; }

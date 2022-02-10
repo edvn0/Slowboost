@@ -14,10 +14,23 @@ public:
 	~ReduceSum() override = default;
 	explicit ReduceSum(SharedNodePtr left, Axis axis = Axis::None);
 	SharedNodePtr execute() override;
-	Matrix differentiate() override;
+	std::array<Matrix, 2> backprop(double wrt) override;
+	std::array<Matrix, 2> backprop(const Matrix& wrt) override;
 
 private:
 	Axis axis;
+
+	int axis_value()
+	{
+		switch (axis) {
+		case Axis::Zero:
+			return 0;
+		case Axis::One:
+			return 1;
+		case Axis::None:
+			return -1;
+		}
+	}
 };
 
 #endif // COMP_GRAPH_REDUCESUM_HPP

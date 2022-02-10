@@ -4,8 +4,20 @@
 
 #include "common.hpp"
 
-SharedNodePtr var(Matrix&& val) { return std::make_shared<Variable>(val); }
+SharedNodePtr var(Matrix&& val)
+{
+	auto out = std::make_shared<Variable>(val);
+	return out;
+}
 
-SharedNodePtr var(const Matrix& val) { return std::make_shared<Variable>(val); }
+SharedNodePtr var(const Matrix& val)
+{
+	auto out = std::make_shared<Variable>(val);
+	return out;
+}
 
-SharedNodePtr ph(const std::string& name) { return std::make_shared<Placeholder>(name); }
+SharedNodePtr ph(const std::string& name)
+{
+	auto out = std::make_shared<Placeholder>(name);
+	return out;
+}

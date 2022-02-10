@@ -12,6 +12,8 @@
 
 #include <array>
 #include <fstream>
+#include <functional>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -30,7 +32,8 @@ SharedNodePtr ph(const std::string& name);
 
 template <typename T, typename... Args> SharedNodePtr op(Args&&... args)
 {
-	return std::make_shared<T>(std::forward<Args>(args)...);
+	auto out = std::make_shared<T>(std::forward<Args>(args)...);
+	return out;
 }
 
 #endif // COMP_GRAPH_COMMON_HPP

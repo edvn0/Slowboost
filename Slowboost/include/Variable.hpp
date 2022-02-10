@@ -19,10 +19,13 @@ public:
 
 	SharedNodePtr execute() override { return std::make_shared<Variable>(data); }
 
-	std::string display_node() override;
+	void add_delta(const Matrix& delta) { data.array() += delta.array(); };
+
+	std::array<Matrix, 2> backprop(const Matrix& wrt) override { return {}; };
 
 	Matrix get_data() { return data; }
 	[[nodiscard]] Matrix get_data() const { return data; }
+	std::string display_node() override;
 
 public:
 	static SharedNodePtr glorot_uniform(size_t input_units, size_t output_units);

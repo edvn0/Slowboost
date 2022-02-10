@@ -3,11 +3,15 @@
 //
 
 #include "Gradients.hpp"
+#include "common.hpp"
+#include "optimizers/GradientDescentOptimizer.hpp"
+
+static Matrix constant(double val) { return Matrix::Constant(1, 1, val); }
 
 GradTable compute_gradients(const SharedNodePtr& loss)
 {
 	GradTable table;
-	table[loss] = 1;
+	table[loss.get()] = constant(1.0);
 
 	GradSet visited;
 	GradQueue queue;
@@ -17,13 +21,57 @@ GradTable compute_gradients(const SharedNodePtr& loss)
 	while (!queue.empty()) {
 		auto node = queue.front();
 		queue.pop();
+		auto node_ptr = node.get();
 
 		if (node != loss) {
 
-			table[node] = 0;
+			table[node_ptr] = constant(0.0);
 
-			auto output = node->get_output();
+			auto consumer = node->get_consumer();
+
+			auto lossgrad_wrt_consumer_output = table[consumer];
+
+			auto lossgrads_wrt_consumer_inputs = consumer->backprop(lossgrad_wrt_consumer_output);
+
+			auto children = node->inputs();
+			if (children == 1) {
+				Array grad = table[node_ptr].array();
+				Array lg = lossgrads_wrt_consumer_inputs[0].array();
+				table[node_ptr] = lg.unaryExpr([&](double d) { return d + lg(0, 0); });
+			} else {
+				if (node->get_left()->get_consumer() == node_ptr) {
+					Array grad = table[node_ptr].array();
+					Array lg = lossgrads_wrt_consumer_inputs[0].array();
+					table[node_ptr] = lg.unaryExpr([&](double d) { return d + lg(0, 0); });
+				}
+
+				if (node->get_right()->get_consumer() == node_ptr) {
+					Array grad = table[node_ptr].array();
+					Array lg = lossgrads_wrt_consumer_inputs[0].array();
+					table[node_ptr] = lg.unaryExpr([&](double d) { return d + lg(0, 0); });
+				}
+			}
+		}
+
+		std::array<SharedNodePtr, 2> possible = { node->get_left(), node->get_right() };
+		for (auto& p : possible) {
+			if (p && !visited.contains(p)) {
+				visited.insert(p);
+				queue.push(p);
+			}
 		}
 	}
 	return table;
-}
+};
+
+SharedNodePtr minimize(const SharedNodePtr& loss_node, const OptimizerParameters& parameters)
+{
+	switch (parameters.optimizer) {
+	case OptimizerParameters::Optimizer::Adam:
+		throw std::runtime_error("We do not support Adam yet.");
+	case OptimizerParameters::Optimizer::GradientDescent:
+		return std::make_shared<GradientDescentOptimizer>(loss_node, parameters.learning);
+	case OptimizerParameters::Optimizer::Momentum:
+		throw std::runtime_error("We do not support Momentum yet.");
+	}
+};

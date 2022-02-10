@@ -16,6 +16,8 @@ public:
 
 	SharedNodePtr execute() override { throw std::runtime_error("We never execute this node."); }
 
+	std::array<Matrix, 2> backprop(const Matrix& wrt) override;
+
 public:
 	std::string id() { return identifier; };
 	[[nodiscard]] std::string id() const { return identifier; };

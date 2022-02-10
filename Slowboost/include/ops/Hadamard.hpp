@@ -12,7 +12,7 @@ public:
 	~Hadamard() override = default;
 	explicit Hadamard(SharedNodePtr left, SharedNodePtr right);
 	SharedNodePtr execute() override;
-	Matrix differentiate() override;
+	std::array<Matrix, 2> backprop(const Matrix& wrt) override;
 };
 
 #endif // COMP_GRAPH_HADAMARD_HPP

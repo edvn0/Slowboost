@@ -12,7 +12,7 @@ public:
 	~Sigmoid() override = default;
 	explicit Sigmoid(SharedNodePtr left);
 	SharedNodePtr execute() override;
-	Matrix differentiate() override;
+	std::array<Matrix, 2> backprop(double wrt) override;
 
 private:
 	MathFunction sigmoid = [](double d) { return 1.0 / (1 + exp(-d)); };

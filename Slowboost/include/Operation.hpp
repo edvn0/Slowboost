@@ -21,7 +21,9 @@ public:
 
 	SharedNodePtr execute() override = 0;
 
-	virtual Matrix differentiate() = 0;
+	std::array<Matrix, 2> backprop(const Matrix& wrt) override = 0;
+
+	virtual Matrix differentiate() { return {}; };
 };
 
 #endif // COMP_GRAPH_OPERATION_HPP

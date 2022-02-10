@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "EigenRand/EigenRand"
+#include "Gradients.hpp"
 #include "Graph.hpp"
 #include "Session.hpp"
 #include "common.hpp"
@@ -61,10 +62,12 @@ int main()
 	auto mlp = Graph(p);
 	auto loss_graph = Graph(loss);
 
+	auto min = Graph(minimize(loss));
+
 	PlaceholderMap mapping{ { "x", all_points } };
 	auto estimation_output = mlp.evaluate(mapping);
 	mapping.try_emplace("c", correct_identifier);
-	auto loss_output = loss_graph.evaluate(mapping);
+	auto loss_output = min.evaluate(mapping);
 
 	std::cout << loss_output;
 

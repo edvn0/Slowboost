@@ -12,7 +12,7 @@ public:
 	~LeakyRelu() override = default;
 	explicit LeakyRelu(SharedNodePtr value, double leak = 0.01);
 	SharedNodePtr execute() override;
-	Matrix differentiate() override;
+	std::array<Matrix, 2> backprop(const Matrix& wrt) override;
 
 private:
 	double leak_factor;

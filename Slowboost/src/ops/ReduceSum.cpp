@@ -30,4 +30,23 @@ SharedNodePtr ReduceSum::execute()
 	return std::make_unique<Variable>(out);
 }
 
-Matrix ReduceSum::differentiate() { return left->get_output(); }
+std::array<Matrix, 2> ReduceSum::backprop(double wrt)
+{
+	std::array<long, 2> shape = { left->get_output().rows(), left->get_output().cols() };
+	shape[axis_value()] = 1;
+	std::array<long, 2> scale = { left->get_output().rows() / shape[0], left->get_output().cols() / shape[1] };
+	return { Matrix::Constant(shape[0] * scale[0], scale[1], wrt), {} };
+}
+
+std::array<Matrix, 2> ReduceSum::backprop(const Matrix& wrt)
+{
+	std::array<long, 2> shape = { left->get_output().rows(), left->get_output().cols() };
+	shape[axis_value()] = 1;
+	std::array<long, 2> scale = { left->get_output().rows() / shape[0], left->get_output().cols() / shape[1] };
+
+	Matrix out(scale[0] * shape[0], scale[0]);
+	for (long i = 0; i < scale[0] * shape[0]; i++) {
+		out(i, 0) = wrt(0, 0);
+	}
+	return { out, {} };
+}

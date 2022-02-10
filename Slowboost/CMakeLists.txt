@@ -8,6 +8,6 @@ file(GLOB_RECURSE includes CONFIGURE_DEPENDS "*.hpp")
 
 message(STATUS "${sources}")
 
-add_library(Slowboost ${sources} ${includes})
+add_library(Slowboost ${sources} ${includes} include/util/Enumerate.hpp)
 target_include_directories(Slowboost PRIVATE include /usr/local/include
-                                             ../lib/EigenRand)
+        ../lib/EigenRand)

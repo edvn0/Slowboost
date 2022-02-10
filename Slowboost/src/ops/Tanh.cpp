@@ -14,4 +14,7 @@ SharedNodePtr Tanh::execute()
 	return std::make_unique<Variable>(matrix.unaryExpr(_tanh));
 }
 
-Matrix Tanh::differentiate() { return left->get_output().unaryExpr(tanh_diff); }
+std::array<Matrix, 2> Tanh::backprop(double wrt)
+{
+	return { wrt * output.array() * (1 - output.array() * output.array()), {} };
+}
