@@ -3,7 +3,6 @@
 //
 
 #include "ops/MatrixMultiply.hpp"
-#include <xtensor-blas/xlinalg.hpp>
 
 MatrixMultiply::MatrixMultiply(SharedNodePtr left, SharedNodePtr right)
 	: Operation(std::move(left), std::move(right), "MatrixMultiply"){};

@@ -1,12 +1,14 @@
 repos:
-  - repo: https://github.com/cheshirekow/cmake-format-precommit
-    rev: v0.6.10
-    hooks:
-      - id: cmake-format
-      - id: cmake-lint
   - repo: local
     hooks:
+      - id: lint-format-cmake
+        name: LintFormatCmake
+        entry: ./scripts/lint-and-format.sh
+        language: script
       - id: googletest
         name: Google Test
-        entry: ./test.sh
+        entry: ./run.sh
+        args:
+          - "SlowboostTests"
+          - "Debug"
         language: script

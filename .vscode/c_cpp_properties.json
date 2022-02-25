@@ -4,7 +4,10 @@
             "name": "Mac",
             "includePath": [
                 "${workspaceFolder}/**",
+                "${workspaceFolder}/SlowboostTests/googletest/googletest/include",
                 "${workspaceFolder}/lib/xtl",
+                "${workspaceFolder}/lib/spdlog",
+                "${workspaceFolder}/lib/xtensor-blas",
                 "${workspaceFolder}/lib/xtensor"
             ],
             "defines": [],

@@ -20,7 +20,6 @@ SharedNodePtr Log::execute()
 std::array<Matrix, 2> Log::backprop(const Matrix& wrt)
 {
 	auto A = left->get_output();
-    
-    
+
 	return { wrt / (A + 1e-9), {} };
 }

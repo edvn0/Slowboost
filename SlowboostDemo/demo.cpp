@@ -17,10 +17,6 @@
 #include "ops/ReduceSum.hpp"
 #include "ops/Softmax.hpp"
 
-#include <xtensor/xio.hpp>
-#include <xtensor/xpad.hpp>
-#include <xtensor/xrandom.hpp>
-
 int main()
 {
 	Logger::init();

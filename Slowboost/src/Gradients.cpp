@@ -6,7 +6,7 @@
 #include "common.hpp"
 #include "optimizers/GradientDescentOptimizer.hpp"
 
-static Matrix constant(double val) { return xt::xarray<double>({val}); }
+static Matrix constant(double val) { return xt::xarray<double>({ val }); }
 
 GradTable compute_gradients(const SharedNodePtr& loss)
 {
@@ -34,13 +34,13 @@ GradTable compute_gradients(const SharedNodePtr& loss)
 			auto lossgrads_wrt_consumer_inputs = consumer->backprop(lossgrad_wrt_consumer_output);
 
 			auto children = node->inputs();
-            if (children == 0) {
-                continue;
-            } else if (children == 1) {
-                table[node_ptr] += lossgrad_wrt_consumer_output[0];
+			if (children == 0) {
+				continue;
+			} else if (children == 1) {
+				table[node_ptr] += lossgrad_wrt_consumer_output[0];
 			} else {
 				if (node->get_left()->get_consumer() == node_ptr) {
-                    table[node_ptr] += lossgrads_wrt_consumer_inputs[0];
+					table[node_ptr] += lossgrads_wrt_consumer_inputs[0];
 				}
 
 				if (node->get_right()->get_consumer() == node_ptr) {

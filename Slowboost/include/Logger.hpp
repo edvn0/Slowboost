@@ -18,6 +18,8 @@ public:
 	static std::shared_ptr<spdlog::logger> get_client_logger();
 
 private:
+    static bool is_initialized;
+    
 	static std::shared_ptr<spdlog::logger> core_logger;
 	static std::shared_ptr<spdlog::logger> client_logger;
 };

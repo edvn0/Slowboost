@@ -5,17 +5,17 @@
 #ifndef COMP_GRAPH_STOPWATCH_HPP
 #define COMP_GRAPH_STOPWATCH_HPP
 
-#include <chrono>
 #include <atomic>
+#include <chrono>
 
-template <typename Clock = std::chrono::high_resolution_clock>
-class Stopwatch
-{
+template <typename Clock = std::chrono::high_resolution_clock> class Stopwatch {
 	const typename Clock::time_point start_point;
+
 public:
-	Stopwatch() :
-		start_point(Clock::now())
-	{}
+	Stopwatch()
+		: start_point(Clock::now())
+	{
+	}
 
 	template <typename Rep = typename Clock::duration::rep, typename Units = typename Clock::duration>
 	Rep elapsed_time() const

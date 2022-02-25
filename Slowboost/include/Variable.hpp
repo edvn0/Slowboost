@@ -7,6 +7,13 @@
 
 #include "Node.hpp"
 
+#include <xtensor-blas/xlinalg.hpp>
+#include <xtensor/xarray.hpp>
+#include <xtensor/xio.hpp>
+#include <xtensor/xmath.hpp>
+#include <xtensor/xpad.hpp>
+#include <xtensor/xrandom.hpp>
+
 #define SHAPE(N, M) INFO("{} Shape: {} x {}", N, M.shape(0), M.shape(1))
 
 class Variable : public Node {

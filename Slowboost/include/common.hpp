@@ -17,11 +17,12 @@
 #include <utility>
 #include <vector>
 
-#ifdef CG_DEBUG
-#include <iostream>
-#define DEBUG(x) std::cout << "\n" << (x) << "\n"
-#else
-#define DEBUG
+#ifdef SLOWBOOST_DEBUG
+
+SharedNodePtr debug_var(Matrix&& val);
+
+SharedNodePtr debug_var(const Matrix& val);
+
 #endif
 
 SharedNodePtr var(Matrix&& val);

@@ -3,7 +3,6 @@
 //
 
 #include "../include/Variable.hpp"
-#include <xtensor/xrandom.hpp>
 
 SharedNodePtr Variable::glorot_uniform(size_t input_units, size_t output_units)
 {

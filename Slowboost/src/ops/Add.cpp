@@ -5,8 +5,6 @@
 #include "ops/Add.hpp"
 #include "util/Enumerate.hpp"
 
-#include <xtensor-blas/xlinalg.hpp>
-
 static constexpr auto LIMIT_WEIRD_SHAPE = 10'000;
 
 Add::Add(SharedNodePtr left, SharedNodePtr right)
