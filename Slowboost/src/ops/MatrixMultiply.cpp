@@ -3,6 +3,7 @@
 //
 
 #include "ops/MatrixMultiply.hpp"
+#include <xtensor-blas/xlinalg.hpp>
 
 MatrixMultiply::MatrixMultiply(SharedNodePtr left, SharedNodePtr right)
 	: Operation(std::move(left), std::move(right), "MatrixMultiply"){};
@@ -11,13 +12,22 @@ SharedNodePtr MatrixMultiply::execute()
 {
 	auto l = left->get_output();
 	auto r = right->get_output();
-	return std::make_unique<Variable>(l * r);
+
+	Matrix dot = xt::linalg::dot(l, r);
+
+	INFO("Dot Shape: {} x {}", dot.shape(0), dot.shape(1));
+
+	return std::make_unique<Variable>(dot);
 }
 
 std::array<Matrix, 2> MatrixMultiply::backprop(const Matrix& wrt)
 {
-	auto A = dynamic_cast<Variable*>(left.get())->get_data();
-	auto B = dynamic_cast<Variable*>(right.get())->get_data();
-	Matrix out = Matrix::Zero(A.rows() + B.rows(), B.cols());
-	return { B * wrt, A * wrt };
+	auto A = left->get_output();
+	auto B = right->get_output();
+
+	std::cout << A.shape(0) << "x" << A.shape(1) << "\n";
+	std::cout << B.shape(0) << "x" << B.shape(1) << "\n";
+	std::cout << wrt.shape(0) << "x" << wrt.shape(1) << "\n";
+
+	return { xt::linalg::dot(wrt, xt::transpose(B)), xt::linalg::dot(wrt, xt::transpose(A)) };
 }

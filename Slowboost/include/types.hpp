@@ -5,15 +5,15 @@
 #ifndef COMP_GRAPH_TYPES_HPP
 #define COMP_GRAPH_TYPES_HPP
 
-#include <eigen3/Eigen/Core>
 #include <memory>
+#include <xtensor/xarray.hpp>
+#include <xtensor/xio.hpp>
+#include <xtensor/xview.hpp>
 
 class Node;
 using SharedNodePtr = std::shared_ptr<Node>;
 
-typedef Eigen::Vector<double, Eigen::Dynamic> Vector;
-typedef Eigen::RowVector<double, Eigen::Dynamic> RowVector;
-typedef Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic> Matrix;
-typedef Eigen::Array<double, Eigen::Dynamic, Eigen::Dynamic> Array;
+using Matrix = xt::xarray<double>;
+using Array = xt::xarray<double>;
 
 #endif // COMP_GRAPH_TYPES_HPP

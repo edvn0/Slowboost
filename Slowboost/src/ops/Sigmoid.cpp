@@ -10,7 +10,7 @@ Sigmoid::Sigmoid(SharedNodePtr value)
 SharedNodePtr Sigmoid::execute()
 {
 	auto l = left->get_output();
-	return std::make_unique<Variable>(l.unaryExpr(sigmoid));
+	return std::make_unique<Variable>(1.0 / (1.0 + xt::exp(-l)));
 }
 
 std::array<Matrix, 2> Sigmoid::backprop(double wrt) { return {}; }

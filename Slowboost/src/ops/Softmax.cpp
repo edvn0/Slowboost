@@ -12,15 +12,16 @@ Softmax::Softmax(SharedNodePtr value)
 SharedNodePtr Softmax::execute()
 {
 	auto l = left->get_output();
+	auto max_along_row = xt::amax(l, { 1 });
 
-	Matrix sm = Matrix::Zero(l.rows(), l.cols());
-	for (long i = 0; i < l.rows(); i++) {
-		double row_max = l.row(i).maxCoeff();
-		auto stable = (l.row(i).array() - row_max).exp();
-		sm.row(i) = stable / stable.sum();
-	}
+	INFO("{}", max_along_row);
 
-	return std::make_unique<Variable>(std::move(sm));
+	auto e_x = xt::exp(l - max_along_row);
+	auto out = e_x / xt::sum(l);
+
+	INFO("Softmax Shape: {} x {}", out.shape(0), out.shape(1));
+
+	return std::make_unique<Variable>(out);
 }
 
 std::array<Matrix, 2> Softmax::backprop(const Matrix& wrt) { return {}; }

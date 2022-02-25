@@ -11,10 +11,7 @@ SharedNodePtr Tanh::execute()
 {
 	auto matrix = left->get_output();
 
-	return std::make_unique<Variable>(matrix.unaryExpr(_tanh));
+	return std::make_unique<Variable>(xt::tanh(matrix));
 }
 
-std::array<Matrix, 2> Tanh::backprop(double wrt)
-{
-	return { wrt * output.array() * (1 - output.array() * output.array()), {} };
-}
+std::array<Matrix, 2> Tanh::backprop(double wrt) { return { wrt * output * (1 - output * output), {} }; }

@@ -4,7 +4,6 @@
 
 #include <iostream>
 
-#include "EigenRand/EigenRand"
 #include "Gradients.hpp"
 #include "Graph.hpp"
 #include "Session.hpp"
@@ -17,45 +16,39 @@
 #include "ops/Negative.hpp"
 #include "ops/ReduceSum.hpp"
 #include "ops/Softmax.hpp"
-#include "random.hpp"
+
+#include <xtensor/xio.hpp>
+#include <xtensor/xpad.hpp>
+#include <xtensor/xrandom.hpp>
 
 int main()
 {
+	Logger::init();
+
 	static auto constexpr input_size = 2;
 	static auto constexpr output_size = 2;
 	static auto constexpr h1_output_size = 50;
 	static auto constexpr h2_output_size = 100;
 
-	auto gen = normal_generator();
+	Matrix red_points = xt::random::randn<double>({ 50, 2 }) - 2 * xt::ones<double>({ 50, 2 });
+	Matrix blue_points = xt::random::randn<double>({ 50, 2 }) + 2 * xt::ones<double>({ 50, 2 });
 
-	auto red_points = Matrix::Random(50, input_size) - 2 * Matrix::Ones(50, input_size);
-	auto blue_points = Matrix::Random(50, input_size) + 2 * Matrix::Ones(50, input_size);
-	Matrix all_points(red_points.rows() + blue_points.rows(), red_points.cols());
-	all_points << blue_points, red_points;
-	Matrix correct_identifier(100, output_size);
-	correct_identifier << 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-		1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
-		1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1,
-		0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-		0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
-		0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1;
+	auto all_points = xt::vstack(xtuple(red_points, blue_points));
+
+	Matrix red_correct = { { 1, 0 } };
+	Matrix blue_correct = { { 0, 1 } };
+	Matrix correct_id_red = xt::tile(red_correct, { 50, 1 });
+	Matrix correct_id_blue = xt::tile(blue_correct, { 50, 1 });
+
+	auto correct_identifier = xt::vstack(xtuple(correct_id_red, correct_id_blue));
+
+	SHAPE("Correct Identifiers", correct_identifier);
+
 	// MLP
 	// Softmax(Tanh(Tanh(Ax + B)z + C)y + E)
-	Matrix wH1, bH1;
-	wH1 = Eigen::Rand::normal<Matrix>(input_size, h1_output_size, gen, 1.0, 1000);
-	bH1 = Eigen::Rand::normal<Matrix>(h1_output_size, 1, gen, 1.0, 1000);
-	Matrix wH2, bH2;
-	wH2 = Eigen::Rand::normal<Matrix>(h1_output_size, h2_output_size, gen, 1.0, 1000);
-	bH2 = Eigen::Rand::normal<Matrix>(h2_output_size, 1, gen, 1.0, 1000);
-	Matrix wO, bO;
-	wO = Eigen::Rand::normal<Matrix>(h2_output_size, output_size, gen, 1.0, 1000);
-	bO = Eigen::Rand::normal<Matrix>(output_size, 1, gen, 1.0, 1000);
-
-	auto h1 = op<LeakyRelu>(op<Add>(op<MatrixMultiply>(ph("x"), var(wH1)), var(bH1)));
-
-	auto h2 = op<LeakyRelu>(op<Add>(op<MatrixMultiply>(h1, var(wH2)), var(bH2)));
-
-	auto p = op<Softmax>(op<Add>(op<MatrixMultiply>(h2, var(wO)), var(bO)));
+	auto w = Variable::glorot_uniform(2, 2);
+	auto b = Variable::glorot_uniform(2, 1);
+	auto p = op<Softmax>(op<Add>(op<MatrixMultiply>(ph("x"), w), b));
 
 	auto loss = op<Negative>(op<ReduceSum>(op<ReduceSum>(op<Hadamard>(ph("c"), op<Log>(p)), Axis::One)));
 
@@ -65,11 +58,12 @@ int main()
 	auto min = Graph(minimize(loss));
 
 	PlaceholderMap mapping{ { "x", all_points } };
-	auto estimation_output = mlp.evaluate(mapping);
-	mapping.try_emplace("c", correct_identifier);
-	auto loss_output = min.evaluate(mapping);
+	Matrix estimation_output = mlp.evaluate(mapping);
 
-	std::cout << loss_output;
+	mapping.try_emplace("c", correct_identifier);
+	auto loss_output = loss_graph.evaluate(mapping);
+
+	INFO("{}", loss_output);
 
 	return 0;
 }

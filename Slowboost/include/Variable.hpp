@@ -7,6 +7,8 @@
 
 #include "Node.hpp"
 
+#define SHAPE(N, M) INFO("{} Shape: {} x {}", N, M.shape(0), M.shape(1))
+
 class Variable : public Node {
 private:
 	Matrix data;
@@ -19,7 +21,7 @@ public:
 
 	SharedNodePtr execute() override { return std::make_shared<Variable>(data); }
 
-	void add_delta(const Matrix& delta) { data.array() += delta.array(); };
+	void add_delta(const Matrix& delta) { data += delta; };
 
 	std::array<Matrix, 2> backprop(const Matrix& wrt) override { return {}; };
 

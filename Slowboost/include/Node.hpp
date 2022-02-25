@@ -10,6 +10,8 @@
 #include <utility>
 #include <vector>
 
+#include "Logger.hpp"
+
 #include "types.hpp"
 
 enum class NodeType : size_t { NONE = 0, OP = 1, VAR = 2, PH = 3 };
@@ -50,7 +52,7 @@ public:
 	virtual std::string display_node() { return {}; };
 
 	virtual std::array<Matrix, 2> backprop(const Matrix& wrt) = 0;
-	virtual std::array<Matrix, 2> backprop(double wrt) { return backprop(Matrix::Constant(1, 1, wrt)); };
+	virtual std::array<Matrix, 2> backprop(double wrt) { return backprop(xt::zeros<double>({ 1, 1 }) + wrt); };
 
 public:
 	SharedNodePtr& get_left() { return left; }
